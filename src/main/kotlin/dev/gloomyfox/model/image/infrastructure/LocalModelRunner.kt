@@ -5,6 +5,7 @@ import org.tensorflow.Session
 import org.tensorflow.Tensor
 import org.tensorflow.framework.ConfigProto
 import org.tensorflow.framework.GPUOptions
+import java.io.FileNotFoundException
 import java.lang.IllegalArgumentException
 import java.nio.FloatBuffer
 
@@ -16,12 +17,18 @@ class LocalModelRunner(modelDir: String,
                        private val outputShape: LongArray,
                        gpuFraction: Double = 1.0) : ModelRunner {
 
-    // 모델을 찾지 못하면 native에서 크래시가 발생하나 끌어올리는 코드가 없어 원인을 알기 어려운 문제 존재
-    private val session: Session = SavedModelBundle.loader(modelDir)
-            .withConfigProto(ConfigProto.newBuilder()
-                    .setGpuOptions(GPUOptions.newBuilder()
-                            .setPerProcessGpuMemoryFraction(gpuFraction)).build().toByteArray())
-            .load().session()
+    // ClassPathResource를 사용해도 되지만, Spring 의존을 하지 않고 싶은 부분이어서 아래와 같이 구현
+    private val session: Session =
+            javaClass.classLoader.getResource(MODEL_DIR_PREFIX + modelDir + MODEL_PB_NAME)?.let {
+                javaClass.classLoader.getResource(MODEL_DIR_PREFIX + modelDir + MODEL_VARIABLES_NAME)?.let {
+                    SavedModelBundle.loader(it.path.substring(0, it.path.length - MODEL_VARIABLES_NAME.length))
+                            .withTags("serve")
+                            .withConfigProto(ConfigProto.newBuilder()
+                                    .setGpuOptions(GPUOptions.newBuilder()
+                                            .setPerProcessGpuMemoryFraction(gpuFraction)).build().toByteArray())
+                            .load().session()
+                } ?: throw FileNotFoundException("${MODEL_DIR_PREFIX + modelDir + MODEL_VARIABLES_NAME} not found.")
+            } ?: throw FileNotFoundException("${MODEL_DIR_PREFIX + modelDir + MODEL_PB_NAME} not found.")
 
     override fun run(input: FloatArray): FloatArray {
         return session.runner().feed(inputName, input.convert(inputShape)).fetch(outputName).run().convert(outputShape)
@@ -40,5 +47,11 @@ class LocalModelRunner(modelDir: String,
         this[0].writeTo(buffer)
 
         return buffer.array()
+    }
+
+    companion object {
+        private const val MODEL_DIR_PREFIX = "model/"
+        private const val MODEL_PB_NAME = "/saved_model.pb"
+        private const val MODEL_VARIABLES_NAME = "/variables"
     }
 }

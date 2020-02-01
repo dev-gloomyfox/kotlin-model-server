@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 
 class LocalModelRunnerTests {
 
-    private val runner = LocalModelRunner("", "", longArrayOf(1, 3, 3, 1),
+    private val runner = LocalModelRunner("dummy", "", longArrayOf(1, 3, 3, 1),
             "", longArrayOf(1, 10))
 
     @Test
