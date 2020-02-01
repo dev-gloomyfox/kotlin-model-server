@@ -9,7 +9,10 @@ import java.io.FileNotFoundException
 import java.lang.IllegalArgumentException
 import java.nio.FloatBuffer
 
-// Input, Output이 여러 개인 상황이 있을 수 있으나 현재는 한 개만을 가정
+/**
+ * Input, Output이 여러 개인 상황이 있을 수 있으나 현재는 한 개만을 가정
+ * TODO: 다수의 Input, Output을 받을 수 있게 일반화할 예정
+ */
 class LocalModelRunner(modelDir: String,
                        private val inputName: String,
                        private val inputShape: LongArray,
@@ -34,7 +37,18 @@ class LocalModelRunner(modelDir: String,
         return session.runner().feed(inputName, input.convert(inputShape)).fetch(outputName).run().convert(outputShape)
     }
 
+    override fun close() {
+        this.session.close()
+    }
+
     fun FloatArray.convert(shape: LongArray): Tensor<Float> {
+        val shapeSize = if(shape.isEmpty()) 0 else shape.fold(1) { current, next -> current * next.toInt() }
+
+        if(shapeSize != this.size) {
+            throw IllegalArgumentException("Size matching fail. " +
+                    "Input array size: ${this.size}, shape size: $shapeSize.")
+        }
+
         return Tensor.create(shape, FloatBuffer.wrap(this))
     }
 
