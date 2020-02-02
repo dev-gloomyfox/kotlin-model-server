@@ -5,6 +5,7 @@ import org.bytedeco.opencv.global.opencv_core.*
 import org.bytedeco.opencv.opencv_core.Mat
 import org.bytedeco.opencv.opencv_core.Scalar
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.net.URL
@@ -38,6 +39,7 @@ class ClassificationPreprocessorTests {
 
     @ExperimentalUnsignedTypes
     @Test
+    @DisplayName("process 메소드 테스트")
     fun processTest() {
         val processed = preprocessor.process(Image(File(getURL(DUMMY_PNG_NAME).file).readBytes()))
 
@@ -46,16 +48,19 @@ class ClassificationPreprocessorTests {
     }
 
     @Test
+    @DisplayName("Image.create extension 메소드 PNG 포맷 테스트")
     fun extensionCreatePNGFormatTest() {
         extensionCreateImageFormatTest(ImageFormat.PNG)
     }
 
     @Test
+    @DisplayName("Image.create extension 메소드 JPG 포맷 테스트")
     fun extensionCreateJPGFormatTest() {
         extensionCreateImageFormatTest(ImageFormat.JPG)
     }
 
     @Test
+    @DisplayName("Image.create extension 메소드 이미지 포맷이 아닐 때, IllegalArgumentException 발생")
     fun extensionCreateNotImageFormatTest() {
         Assertions.assertThrows(IllegalArgumentException::class.java) {
             with(preprocessor) {
@@ -65,60 +70,70 @@ class ClassificationPreprocessorTests {
     }
 
     @Test
+    @DisplayName("Mat.convert extension 메소드 1 to 1 채널 테스트")
     fun extensionConvertOneToOneChannelTest() {
         extensionConvertTest(ColorChannel.ONE, ColorChannel.ONE, ColorOrder.RGB, assertSame)
         extensionConvertTest(ColorChannel.ONE, ColorChannel.ONE, ColorOrder.BGR, assertSame)
     }
 
     @Test
+    @DisplayName("Mat.convert extension 메소드 1 to 3 채널 테스트")
     fun extensionConvertOneToThreeChannelTest() {
         extensionConvertTest(ColorChannel.ONE, ColorChannel.THREE, ColorOrder.BGR, assertThreeChannelDestination)
         extensionConvertTest(ColorChannel.ONE, ColorChannel.THREE, ColorOrder.RGB, assertThreeChannelDestination)
     }
 
     @Test
+    @DisplayName("Mat.convert extension 메소드 1 to 4 채널 테스트")
     fun extensionConvertOneToFourChannelTest() {
         extensionConvertTest(ColorChannel.ONE, ColorChannel.FOUR, ColorOrder.RGB, assertFourChannelDestination)
         extensionConvertTest(ColorChannel.ONE, ColorChannel.FOUR, ColorOrder.BGR, assertFourChannelDestination)
     }
 
     @Test
+    @DisplayName("Mat.convert extension 메소드 3 to 1 채널 테스트")
     fun extensionConvertThreeToOneChannelTest() {
         extensionConvertTest(ColorChannel.THREE, ColorChannel.ONE, ColorOrder.BGR, assertOneChannelDestination)
         extensionConvertTest(ColorChannel.THREE, ColorChannel.ONE, ColorOrder.RGB, assertOneChannelDestination)
     }
 
     @Test
+    @DisplayName("Mat.convert extension 메소드 3 to 3 채널 테스트")
     fun extensionConvertThreeToThreeChannelTest() {
         extensionConvertTest(ColorChannel.THREE, ColorChannel.THREE, ColorOrder.BGR, assertSame)
         extensionConvertTest(ColorChannel.THREE, ColorChannel.THREE, ColorOrder.RGB, assertThreeChannelDestination)
     }
 
     @Test
+    @DisplayName("Mat.convert extension 메소드 3 to 4 채널 테스트")
     fun extensionConvertThreeToFourChannelTest() {
         extensionConvertTest(ColorChannel.THREE, ColorChannel.FOUR, ColorOrder.BGR, assertFourChannelDestination)
         extensionConvertTest(ColorChannel.THREE, ColorChannel.FOUR, ColorOrder.RGB, assertFourChannelDestination)
     }
 
     @Test
+    @DisplayName("Mat.convert extension 메소드 4 to 1 채널 테스트")
     fun extensionConvertFourToOneChannelTest() {
         extensionConvertTest(ColorChannel.FOUR, ColorChannel.ONE, ColorOrder.BGR, assertOneChannelDestination)
         extensionConvertTest(ColorChannel.FOUR, ColorChannel.ONE, ColorOrder.RGB, assertOneChannelDestination)
     }
 
     @Test
+    @DisplayName("Mat.convert extension 메소드 4 to 3 채널 테스트")
     fun extensionConvertFourToThreeChannelTest() {
         extensionConvertTest(ColorChannel.FOUR, ColorChannel.THREE, ColorOrder.BGR, assertThreeChannelDestination)
         extensionConvertTest(ColorChannel.FOUR, ColorChannel.THREE, ColorOrder.RGB, assertThreeChannelDestination)
     }
 
     @Test
+    @DisplayName("Mat.convert extension 메소드 4 to 4 채널 테스트")
     fun extensionConvertFourToFourChannelTest() {
         extensionConvertTest(ColorChannel.FOUR, ColorChannel.FOUR, ColorOrder.BGR, assertSame)
         extensionConvertTest(ColorChannel.FOUR, ColorChannel.FOUR, ColorOrder.RGB, assertFourChannelDestination)
     }
 
     @Test
+    @DisplayName("Mat.convert extension 메소드 호환되지 않는 채널 변환일 때, IllegalArgumentException 발생")
     fun extensionConvertIncompatibleSourceChannelTest() {
         Assertions.assertThrows(IllegalArgumentException::class.java) {
             with(preprocessor) {
@@ -129,6 +144,7 @@ class ClassificationPreprocessorTests {
     }
 
     @Test
+    @DisplayName("Mat.resize extension 메소드 테스트")
     fun extensionResizeTest() {
         with(preprocessor) {
             val mat = Mat(DUMMY_RESIZE_MAT_HEIGHT, DUMMY_RESIZE_MAT_WIDTH, CV_8UC4,
@@ -153,6 +169,7 @@ class ClassificationPreprocessorTests {
 
     @ExperimentalUnsignedTypes
     @Test
+    @DisplayName("Mat.normalize 메소드 테스트")
     fun extensionNormalizeTest() {
         with(preprocessor) {
             val mat = Mat(DUMMY_NORMALIZE_MAT_HEIGHT, DUMMY_NORMALIZE_MAT_WIDTH, CV_8UC4,

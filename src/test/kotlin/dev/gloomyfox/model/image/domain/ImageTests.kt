@@ -3,12 +3,15 @@ package dev.gloomyfox.model.image.domain
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.io.File
 
 class ImageTests {
 
+    @ExperimentalUnsignedTypes
     @Test
+    @DisplayName("classify 메소드 테스트")
     fun classifyTest() {
         val url = javaClass.classLoader.getResource(DUMMY_FILE_NAME)
                 ?: throw IllegalArgumentException("Resource is null.")

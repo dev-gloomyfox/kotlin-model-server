@@ -19,7 +19,6 @@ class ClassificationPreprocessor(private val normalizationFunction: (Float) -> (
     }
 
     fun Image.create(): Mat {
-        // https://kotlinlang.org/docs/reference/functions.html#variable-number-of-arguments-varargs
         val created = imdecode(Mat(BytePointer(*this.data)), IMREAD_UNCHANGED)
         return if(!created.empty()) created else throw IllegalArgumentException("Cannot convert not image format.")
     }
@@ -45,7 +44,6 @@ class ClassificationPreprocessor(private val normalizationFunction: (Float) -> (
         return resized
     }
 
-    // inline function
     @ExperimentalUnsignedTypes
     inline fun Mat.normalize(normalizationFunction: (Float) -> Float): FloatArray {
         val bytes = ByteArray(this.cols() * this.rows() * this.channels())
@@ -90,9 +88,7 @@ class ClassificationPreprocessor(private val normalizationFunction: (Float) -> (
         }
     }
 
-    // companion object
     companion object {
-        //const
         private const val COLOR_NONE_CODE = -1
     }
 }

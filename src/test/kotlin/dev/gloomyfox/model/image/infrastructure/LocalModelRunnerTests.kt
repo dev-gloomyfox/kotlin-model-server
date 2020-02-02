@@ -23,6 +23,7 @@ class LocalModelRunnerTests {
     }
 
     @Test
+    @DisplayName("Model 경로에 saved_model.pb 파일이 존재하지 않을 때 FileNotFoundException 발생")
     fun constructPBFileNotExistTest() {
         Assertions.assertThrows(FileNotFoundException::class.java) {
             LocalModelRunner(DUMMY_MODEL_VARIABLES_ONLY_DIR,
@@ -31,6 +32,7 @@ class LocalModelRunnerTests {
     }
 
     @Test
+    @DisplayName("Model 경로에 variables 디렉토리가 존재하지 않을 때 FileNotFoundException 발생")
     fun constructVariableDirectoryNotExistTest() {
         Assertions.assertThrows(FileNotFoundException::class.java) {
             LocalModelRunner(DUMMY_MODEL_PB_ONLY_DIR,
@@ -39,6 +41,7 @@ class LocalModelRunnerTests {
     }
 
     @Test
+    @DisplayName("run 메소드 테스트")
     fun runTest() {
         val input = DUMMY_INPUT_ARRAY
         val output = runner.run(input)
@@ -46,6 +49,7 @@ class LocalModelRunnerTests {
     }
 
     @Test
+    @DisplayName("FloatArray.convert extension 메소드 테스트")
     fun extensionFloatArrayConvertTest() {
         with(runner) {
             val tensor = DUMMY_FLOAT_ARRAY.convert(DUMMY_TENSOR_SHAPE)
@@ -69,6 +73,7 @@ class LocalModelRunnerTests {
     }
 
     @Test
+    @DisplayName("FloatArray.convert 호출 시 입력의 크기와 주어진 shape의 전체 크기가 다를 때 IllegalArgumentException 발생")
     fun extensionFloatArrayConvertNotEqualShapeSizeTest() {
         with(runner) {
             Assertions.assertThrows(IllegalArgumentException::class.java) {
@@ -78,6 +83,7 @@ class LocalModelRunnerTests {
     }
 
     @Test
+    @DisplayName("List<Tensor<*>>.convert extension 메소드 테스트")
     fun extensionTensorListConvertTest() {
         with(runner) {
             val tensor = DUMMY_FLOAT_ARRAY.convert(DUMMY_TENSOR_SHAPE)
@@ -92,6 +98,7 @@ class LocalModelRunnerTests {
     }
 
     @Test
+    @DisplayName("List<Tensor<*>>.convert 호출 시 입력의 크기와 주어진 shape의 모양이 다를 때 IllegalArgumentException 발생")
     fun extensionTensorListConvertNotEqualShapeTest() {
         with(runner) {
             val tensor = DUMMY_FLOAT_ARRAY.convert(DUMMY_TENSOR_SHAPE)
