@@ -1,5 +1,10 @@
-spring.servlet.multipart.max-file-size=128KB
-spring.servlet.multipart.max-request-size=128KB
+server:
+  port: 8090
 
-spring.servlet.multipart.enabled=true
-spring.servlet.multipart.location=${java.io.tmpdir}
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      location: ${java.io.tmpdir}
+      max-file-size: 128KB
+      max-request-size: 128KB
